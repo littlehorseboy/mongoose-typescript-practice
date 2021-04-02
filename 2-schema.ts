@@ -24,12 +24,10 @@ kittySchema.methods.speak = function() {
 
 const Kitten = model<DocumentKitty>('Kitten', kittySchema);
 
-Kitten.find({}, (error, docs) => {
-  if (error) return console.error(error);
-  console.log(docs);
-});
+const silence = new Kitten({ name: 'Silence' });
 
-Kitten.find({ name: /^flu/ }, (error, docs) => {
-  if (error) return console.error(error);
-  console.log(docs);
-});
+console.log(silence.name);
+
+const fluffy = new Kitten({ name: 'fluffy' });
+
+fluffy.speak();
