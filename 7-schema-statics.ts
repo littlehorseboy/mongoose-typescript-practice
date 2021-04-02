@@ -1,5 +1,5 @@
 import {
-  connect, connection, Schema, model, Document, Model, Query, QueryWithHelpers
+  connect, connection, Schema, model, Document, Model
 } from 'mongoose';
 
 connection.once('open', () => console.log('\x1b[32m %s', 'opened mongoDB'));
@@ -14,28 +14,31 @@ interface DocumentAnimal extends Document {
   type: string;
 }
 
-interface QueryAnimal extends Query<DocumentAnimal, DocumentAnimal> {
-  byName: (name: string) => QueryWithHelpers<DocumentAnimal[], DocumentAnimal, QueryAnimal>;
+interface ModelAnima extends Model<DocumentAnimal> {
+  findByName: (name: string) => Promise<DocumentAnimal[]>;
+  findByType: (type: string) => Promise<DocumentAnimal[]>;
 }
-
-interface ModelAnima extends Model<DocumentAnimal, QueryAnimal> { }
 
 const animalSchema = new Schema<DocumentAnimal, ModelAnima>({
   name: String,
   type: String,
 });
 
-animalSchema.query.byName = function (name) {
-  return this.where({ name: new RegExp(name, 'i') });
+animalSchema.statics.findByName = function (name: string) {
+  return this.find({ name: new RegExp(name, 'i') });
 };
+
+animalSchema.static('findByType', function (type: string) {
+  return this.find({ type });
+});
 
 const Animal = model<DocumentAnimal, ModelAnima>('Animal', animalSchema);
 // #endregion
 
-Animal.find().byName('dog').exec((error, animals) => {
-  console.log(animals);
-});
+(async () => {
+  let animals = await Animal.findByName('dog')
 
-Animal.findOne().byName('cat').exec((error, animals) => {
+  animals = animals.concat(await Animal.findByType('cat'));
+
   console.log(animals);
-});
+})();
