@@ -1,5 +1,5 @@
 import {
-  connect, connection, Document, model, Schema, Types,
+  connect, connection, Document, model, Schema,
 } from 'mongoose';
 
 connection.once('open', () => console.log('\x1b[32m %s', 'opened mongoDB'));
@@ -13,26 +13,17 @@ interface DocumentAny extends Document {
 }
 
 const schema = new Schema<DocumentAny>({
-  integerOnly: {
-    type: Number,
-    get: (v: number) => Math.round(v),
-    set: (v: number) => Math.round(v),
-    alias: 'i',
+  // name: String,
+  name: {
+    type: String,
+    lowercase: true,
   },
 });
 
 const Example = model<DocumentAny>('Example', schema);
 
-const example = new Example();
+const example = new Example({
+  name: 'AAA'
+});
 
-example.integerOnly = 2.001;
-
-console.log(example.integerOnly);
-
-example.i = 3.001;
-
-console.log(example.i);
-
-example.i = 'a'; // 非法值被直接無視呢
-
-console.log(example.i);
+console.log(example);

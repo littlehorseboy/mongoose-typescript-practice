@@ -1,5 +1,5 @@
 import {
-  connect, connection, Document, model, Schema, Types,
+  connect, connection, Document, Schema,
 } from 'mongoose';
 
 connection.once('open', () => console.log('\x1b[32m %s', 'opened mongoDB'));

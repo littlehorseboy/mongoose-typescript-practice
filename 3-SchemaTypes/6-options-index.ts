@@ -1,5 +1,5 @@
 import {
-  connect, connection, Document, model, Schema, Types,
+  connect, connection, Document, Schema,
 } from 'mongoose';
 
 connection.once('open', () => console.log('\x1b[32m %s', 'opened mongoDB'));
@@ -8,22 +8,16 @@ connection.on('error', console.error.bind(console, '\x1b[31m %s', 'connection er
 
 connect('mongodb://localhost:27017/mongoose', { useNewUrlParser: true, useUnifiedTopology: true });
 
-interface DocumentAny extends Document {
-  [key: string]: any;
+interface DocumentName extends Document {
+  name: string;
 }
 
-const schema = new Schema<DocumentAny>({
-  // name: String,
+const schema = new Schema<DocumentName>({
   name: {
     type: String,
-    lowercase: true,
+    index: true,
+    unique: true,
   },
 });
 
-const Example = model<DocumentAny>('Example', schema);
-
-const example = new Example({
-  name: 'AAA'
-});
-
-console.log(example);
+console.log(schema);
