@@ -20,14 +20,15 @@ const schema = new Schema<DocumentItem>({
 
 const Tank = model<DocumentItem>('Tank', schema);
 
-const small = new Tank({ size: 'small' });
-
-small.save((err) => {
-  if (err) return err;
-});
-
-Tank.create({ size: 'small' }, (err, samll) => {
-  if (err) return err;
-});
-
-Tank.insertMany([{ size: 'small', name: 'Franchi' }]);
+Tank.updateOne(
+  {
+    size: 'small',
+    name: { $not: { $eq: 'Franchi' } }
+  },
+  { name: 'T-90' },
+  {},
+  (err) => {
+    if (err) return err;
+    console.log('updateOne Success');
+  },
+);
